@@ -1,5 +1,6 @@
-from PyQt5.QtWidgets import QWidget,QApplication , QTableWidget, QHBoxLayout, QLabel, QLayout
-from PyQt5.QtGui import QFont,QPicture
+from PyQt5.QtWidgets import QWidget,QApplication ,  QLabel, QGridLayout
+from PyQt5.QtGui import QFont,QPicture,QPalette,QPixmap
+from PyQt5.QtCore import Qt,QSize
 import sys
 import controller.FingerEvent
 import util.NormalUtils
@@ -8,48 +9,89 @@ class MainWindow(QWidget):
             [0, 0, 0, 0],
             [0, 0, 0, 0],
             [0, 0, 0, 0]]
+    count = 0
     def __init__(self):
         super(MainWindow, self).__init__()
+        self.setStyleSheet("QLabel{color:rgb(100,100,100,250);font-size:40px;font-weight:bold;font-family:Roman times;}"
+                           "QLabel:hover{color:rgb(100,100,100,120);}")
         self.setWindowTitle("2048小游戏")
         self.resize(500,500)
         self.focusPolicy()
         self.font = QFont()
+        self.fingerEvent = controller.FingerEvent.FingerEvent()
+        self.pxmap = QPixmap()
         self.initUi()
-        util.NormalUtils.printlist(self.data)
+        # util.NormalUtils.printlist(self.data)
 
     def initUi(self):
-        # self.tllayout = QTableWidget()
-        # self.tllayout.setColumnCount(4)
-        # self.tllayout.setRowCount(4)
-        # #self.tllayout.setFont(QFont(QFont.Black))
-        # self.tllayout.setColumnWidth(100,100)
-        # self.tllayout.setRowHeight(100,100)
-        # self.tllayout.setFixedHeight(400)
-        # self.tllayout.setFixedWidth(400)
-        self.lb1 = QLabel("test")
+        mainlayout = QGridLayout()
+        self.setLayout(mainlayout)
+        self.lbs = []
+        pos = [(i, j) for i in range(0, 4) for j in range(0, 4)]
+        for position in zip(pos):
+            lb = QLabel()
+            qf = QFont()
+            qf.setPixelSize(50)
+            qf.setBold(True)
+            lb.setAlignment(Qt.AlignCenter)
+            lb.setFont(qf)
+            lb.setAutoFillBackground(True)
+            qp = QPalette()
+            qp.setColor(QPalette.Window,Qt.darkBlue)
+            lb.setPalette(qp)
+            lb.setMinimumHeight(100)
+            lb.setMaximumHeight(100)
+            lb.setMaximumWidth(100)
+            lb.setMinimumWidth(100)
+            self.pxmap.load("../res/0.png")
 
-        self.lb1.setFixedWidth(100)
-        self.lb1.setFixedHeight(100)
-        self.setStyleSheet('background: transparent;'
-                            'border-color: rgb(0, 66, 111);'
-                            'margin: 2px;')
-        mainLayout = QHBoxLayout()
-        mainLayout.addWidget(self.lb1)
-        self.setLayout(mainLayout)
-        #self.tllayout.setFont(QFont.Black)
+            qs = QSize(100, 100)
+            print(lb.height(), lb.width())
+            lb.setPixmap(self.pxmap.scaled(qs))
+            self.lbs.append(lb)
+            mainlayout.addWidget(lb,*position[0])
+
+
+
 
     def keyPressEvent(self,event):
-
-        if(event.key() == 16777235):#up
-            self.data = controller.FingerEvent.fingerup(self.data)
-        if(event.key() == 16777237):#down
-            self.data = controller.FingerEvent.fingerdown(self.data)
-        if (event.key() == 16777234):#left
-            self.data = controller.FingerEvent.fingerleft(self.data)
-        if (event.key() == 16777236):#right
-            self.data = controller.FingerEvent.fingerright(self.data)
-        util.NormalUtils.printlist(self.data)
+        try:
+            # self.count = self.count + 1000
+            # print(self.count)
+            if(event.key() == Qt.Key_Up):#up
+                self.data = self.fingerEvent.fingerup(self.data)
+                self.setdatasource()
+                # print(event.key,"up")
+            if(event.key() == Qt.Key_Down):#down
+                self.data = self.fingerEvent.fingerdown(self.data)
+                self.setdatasource()
+                # print(event.key, "down")
+            if (event.key() == Qt.Key_Left):#left
+                self.data = self.fingerEvent.fingerleft(self.data)
+                self.setdatasource()
+                # print(event.key, "left")
+            if (event.key() == Qt.Key_Right):#right
+                self.data = self.fingerEvent.fingerright(self.data)
+                self.setdatasource()
+                # print(event.key, "right")
+            del event
+        except Exception as e:
+            print(e.__str__())
+        # util.NormalUtils.printlist(self.data)
         # print(event.text())
+
+    def setdatasource(self):
+        pos = 0
+        for i in range(0, 4):
+            for j in range(0, 4):
+
+                if self.data[i][j] < 128:
+                    self.pxmap.load("../res/"+str(self.data[i][j])+".png")
+                    qs = QSize(100, 100)
+                    self.lbs[pos].setPixmap(self.pxmap.scaled(qs))
+                else:
+                    self.lbs[pos].setText(str(self.data[i][j]))
+                pos = pos+1
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
