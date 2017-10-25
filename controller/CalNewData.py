@@ -5,7 +5,6 @@ class CalNewData:
         self.normalutils = util.NormalUtils.NormalUtils()
 
     def cal(self,data):
-        #print("cal",data.__str__())
         for idx in range(0, 4, 1):
 
             i = 0
@@ -32,8 +31,6 @@ class CalNewData:
                         data[i][idx] = data[j][idx]
                         data[j][idx] = 0
                         j = j + 1
-                print("i:",i,"j:",j)
-        # print(resdata.__str__())
         return data
 
 

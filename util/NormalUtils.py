@@ -2,7 +2,6 @@ import random
 class NormalUtils:
 
     def getintrandom(self,start:int,end:int):
-        # print(start,end,"getintrandom")
         r = random.Random()
         return r.randint(start, end)
 

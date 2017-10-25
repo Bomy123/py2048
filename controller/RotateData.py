@@ -32,10 +32,3 @@ class RotateData:
 
 
 
-if __name__ == '__main__':
-
-    data = [[1, 2, 0, 0],
-            [1, 6, 0, 2],
-            [0, 0, 8, 0],
-            [0, 0, 0, 8]]
-    print(roateleft(data))
