@@ -56,8 +56,6 @@ class MainWindow(QWidget):
 
     def keyPressEvent(self,event):
         try:
-            # self.count = self.count + 1000
-            # print(self.count)
             if(event.key() == Qt.Key_Up):#up
                 self.data = self.fingerEvent.fingerup(self.data)
                 self.setdatasource()
@@ -73,7 +71,6 @@ class MainWindow(QWidget):
             if (event.key() == Qt.Key_Right):#right
                 self.data = self.fingerEvent.fingerright(self.data)
                 self.setdatasource()
-                # print(event.key, "right")
             del event
         except Exception as e:
             print(e.__str__())
