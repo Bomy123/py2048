@@ -38,9 +38,9 @@ class CalNewData:
 
 
     def insertdata(self,data:list):
-        candidatenum = [2, 4, 8]
+        candidatenum = [2, 4]
         zeronum = self.normalutils.countzero(data)
-        candidatenumidx = self.normalutils.getintrandom(0, 2)
+        candidatenumidx = self.normalutils.getintrandom(0, candidatenum.__len__() - 1)
         if zeronum == 0:
             return data
         newidx = self.normalutils.getintrandom(1, zeronum)

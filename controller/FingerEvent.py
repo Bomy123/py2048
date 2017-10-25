@@ -1,39 +1,45 @@
+import copy
 from controller import CalNewData, RotateData
 class FingerEvent:
     def __init__(self):
         self.calnewdata = CalNewData.CalNewData()
         self.rotatedata = RotateData.RotateData()
+        self.data = []
 
     def fingerup(self,data):
-        resdata = self.calnewdata.cal(data)
-        return self.calnewdata.insertdata(resdata)
+        self.data = copy.deepcopy(data)
+        self.data = self.calnewdata.cal(self.data)
+        return self.calnewdata.insertdata(self.data)
 
 
     def fingerdown(self,data):
-        resdata = self.rotatedata.roatedown(data)
-        resdata = self.calnewdata.cal(resdata)
-        resdata = self.rotatedata.roateup(resdata)
-        resdata = self.calnewdata.insertdata(resdata)
-        return resdata
+        self.data = copy.deepcopy(data)
+        self.data = self.rotatedata.roatedown(self.data)
+        self.data = self.calnewdata.cal(self.data)
+        self.data = self.rotatedata.roateup(self.data)
+        self.data = self.calnewdata.insertdata(self.data)
+        return self.data
 
 
     def fingerleft(self,data):
-        resdata = self.rotatedata.roateright(data)
-        resdata = self.calnewdata.cal(resdata)
-        resdata = self.rotatedata.roateleft(resdata)
-        resdata = self.calnewdata.insertdata(resdata)
-        return resdata
+        self.data = copy.deepcopy(data)
+        self.data = self.rotatedata.roateright(self.data)
+        self.data = self.calnewdata.cal(self.data)
+        self.data = self.rotatedata.roateleft(self.data)
+        self.data = self.calnewdata.insertdata(self.data)
+        return self.data
 
 
     def fingerright(self,data):
-        resdata = self.rotatedata.roateleft(data)
+        self.data = copy.deepcopy(data)
+        self.data = self.rotatedata.roateleft(self.data)
         # NormalUtils.printlist(resdata)
-        resdata = self.calnewdata.cal(resdata)
+        self.data = self.calnewdata.cal(self.data)
         # NormalUtils.printlist(resdata)
-        resdata = self.rotatedata.roateright(resdata)
+        self.data = self.rotatedata.roateright(self.data)
         # NormalUtils.printlist(resdata)
-        resdata = self.calnewdata.insertdata(resdata)
-        return resdata
+        self.data = self.calnewdata.insertdata(self.data)
+        return self.data
 
 
 # data = [[1, 2, 0, 0],

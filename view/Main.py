@@ -1,8 +1,9 @@
-from PyQt5.QtWidgets import QWidget,QApplication ,  QLabel, QGridLayout
-from PyQt5.QtGui import QFont,QPicture,QPalette,QPixmap
+from PyQt5.QtWidgets import QWidget,QApplication ,  QLabel, QGridLayout, QMessageBox
+from PyQt5.QtGui import QFont,QPicture,QPalette,QPixmap,QTextFormat
 from PyQt5.QtCore import Qt,QSize
 import sys
 import controller.FingerEvent
+import copy
 import util.NormalUtils
 class MainWindow(QWidget):
     data = [[0, 0, 0, 0],
@@ -12,7 +13,7 @@ class MainWindow(QWidget):
     count = 0
     def __init__(self):
         super(MainWindow, self).__init__()
-        self.setStyleSheet("QLabel{color:rgb(100,100,100,250);font-size:40px;font-weight:bold;font-family:Roman times;}"
+        self.setStyleSheet("QLabel{color:rgb(100,100,100,250);font-weight:bold;font-family:Roman times;}"
                            "QLabel:hover{color:rgb(100,100,100,120);}")
         self.setWindowTitle("2048小游戏")
         self.resize(500,500)
@@ -43,13 +44,14 @@ class MainWindow(QWidget):
             lb.setMaximumHeight(100)
             lb.setMaximumWidth(100)
             lb.setMinimumWidth(100)
-            self.pxmap.load("../res/0.png")
-
-            qs = QSize(100, 100)
-            print(lb.height(), lb.width())
-            lb.setPixmap(self.pxmap.scaled(qs))
+            # self.pxmap.load("../res/0.png")
+            #
+            # qs = QSize(100, 100)
+            # print(lb.height(), lb.width())
+            # lb.setPixmap(self.pxmap.scaled(qs))
             self.lbs.append(lb)
             mainlayout.addWidget(lb,*position[0])
+        self.setdatasource()
 
 
 
@@ -72,11 +74,25 @@ class MainWindow(QWidget):
                 self.data = self.fingerEvent.fingerright(self.data)
                 self.setdatasource()
             del event
+            if self.data == self.fingerEvent.fingerup(self.data) and self.data == self.fingerEvent.fingerdown(self.data)  and self.data == self.fingerEvent.fingerleft(self.data) and  self.data == self.fingerEvent.fingerright(self.data):
+                print("游戏结束")
+                qm = QMessageBox()
+
+                reply = qm.information(self,"游戏提示框", "<font size='13' color='red'>要再来一局吗？</font>", QMessageBox.No|QMessageBox.Yes)
+                if reply == QMessageBox.Yes:
+                    self.initdata()
+                    self.setdatasource()
+
+
         except Exception as e:
             print(e.__str__())
         # util.NormalUtils.printlist(self.data)
         # print(event.text())
-
+    def initdata(self):
+        self.data = [[0, 0, 0, 0],
+                    [0, 0, 0, 0],
+                    [0, 0, 0, 0],
+                    [0, 0, 0, 0]]
     def setdatasource(self):
         pos = 0
         for i in range(0, 4):
